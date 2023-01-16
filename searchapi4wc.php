@@ -146,7 +146,7 @@ function search_input()
             }
 
         </style>
-        <input type="text" id="searchapi-input" class="form-control" placeholder="Search our plugins..." />
+        <input type="text" id="searchapi-input" class="form-control" placeholder="Wyszukaj produkt..." />
         <div id="searchapi-results" style="display: none;"></div>
         <script>
             // Twoj klucz publiczny do wynikow dla strony
