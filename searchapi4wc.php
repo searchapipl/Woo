@@ -23,7 +23,7 @@ function search_input()
     if (get_option("searchapi_website_uuid")) {
         echo '
         <div id="searchapi-wrapper">
-        <input type="text" id="searchapi-input" autocomplete="off" class="form-control" placeholder="Search our plugins..." />
+        <input type="text" id="searchapi-input" autocomplete="off" class="" placeholder="Wyszukaj produkty..." />
         <div id="searchapi-results" style="display: none;"></div>
           <script>
             var searchapiApiKey = "' . get_option("searchapi_website_uuid") . '";
