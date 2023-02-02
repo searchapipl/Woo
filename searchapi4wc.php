@@ -15,7 +15,6 @@ if (get_option("searchapi_website_uuid") && get_option("searchapi_website_secret
 }
 
 /**
- * If you need to change the look & feel this is the place place to make the changes
  *
  * @return void
  */
@@ -24,141 +23,42 @@ function search_input()
     if (get_option("searchapi_website_uuid")) {
         echo '
         <div id="searchapi-wrapper">
-        <style>
-
-            /* For Desktop View */
-            @media screen and (min-width: 1024px) {
-                #searchapi-wrapper {
-                    width: 650px;
-                }
-                #searchapi-results {
-                    width: 650px;
-                }
-            }
-
-            /* For Tablet View */
-            @media screen and (min-device-width: 768px)
-            and (max-device-width: 1024px) {
-                #searchapi-wrapper {
-                    width: 650px;
-                }
-                #searchapi-results {
-                    width: 650px;
-                }
-            }
-
-            /* For Mobile Portrait View */
-            @media screen and (max-device-width: 480px)
-            and (orientation: portrait) {
-                #searchapi-wrapper {
-                    width: 350px;
-                }
-                #searchapi-results {
-                    width: 350px;
-                }
-            }
-
-            /* For Mobile Landscape View */
-            @media screen and (max-device-width: 640px)
-            and (orientation: landscape) {
-                #searchapi-wrapper {
-                    width: 650px;
-                }
-                #searchapi-results {
-                    width: 650px;
-                }
-            }
-
-            /* For Mobile Phones Portrait or Landscape View */
-            @media screen and (max-device-width: 640px) {
-                #searchapi-wrapper {
-                    width: 320px;
-                }
-                #searchapi-results {
-                    width: 320px;
-                }
-            }
-
-            #searchapi-wrapper {
-                margin: auto;
-                margin-top: 20px;
-                margin-bottom: 20px;
-            }
-
-            #searchapi-input {
-                height: 55px;
-                width: 100%;
-                outline: none;
-                border: none;
-                border-radius: 5px;
-                padding: 0 60px 0 20px;
-                font-size: 18px;
-                box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.4);
-            }
-            #searchapi-results {
-                padding: 0;
-                opacity: 0;
-                pointer-events: none;
-                max-height: 280px;
-                overflow-y: auto;
-            }
-            #searchapi-results {
-                padding: 10px 8px;
-                opacity: 1;
-                pointer-events: auto;
-                box-shadow: 0px 0px 6px 0px #aaa;
-                position: absolute;
-                background: #fff;
-                z-index: 1000;
-            }
-            #searchapi-results ul {
-                padding-left: 0px;
-                margin: 0;
-            }
-            #searchapi-results li {
-                list-style: none;
-                padding: 8px 12px;
-                display: none;
-                width: 100%;
-                cursor: default;
-                border-radius: 3px;
-            }
-            #searchapi-results li {
-                display: block;
-            }
-            #searchapi-results li img {
-                width: 100%;
-            }
-            #searchapi-results table tr td:first-child {
-                width: 40px;
-            }
-            #searchapi-results li:hover {
-                background: #efefef;
-            }
-            #searchapi-wrapper table, td, th {
-                border:0px;
-                margin: 0;
-                border-spacing: 0;
-                border-width: 0;
-            }
-            .site-content .ast-container {
-                display: flow-root;
-            }
-
-        </style>
-        <input type="text" id="searchapi-input" class="form-control" placeholder="Wyszukaj produkt..." />
+        <input type="text" id="searchapi-input" autocomplete="off" class="form-control" placeholder="Search our plugins..." />
         <div id="searchapi-results" style="display: none;"></div>
-        <script>
-            // Twoj klucz publiczny do wynikow dla strony
-            var searchapiApiKey = "' . get_option("searchapi_website_uuid") . '",
-            d = document,
-            b = d.getElementsByTagName("body")[0],
-            s = d.createElement("script");
-            s.type="text/javascript";
-            s.async=true;
-            s.src="https://searchapi.pl/searchapi.min.js";
-            b.appendChild(s);
-        </script>
+          <script>
+            var searchapiApiKey = "' . get_option("searchapi_website_uuid") . '";
+            var d = document,
+              b = d.getElementsByTagName("body")[0],
+              searchApiConfig = {
+                "containers": {
+                  inputId: "searchapi-input",
+                  resultsId: "searchapi-results",
+                },
+                "dictonary": {
+                  "currency": "$",
+                  "price_starts_from": "From",
+                  "recent_queries": "Recently searched by me",
+                  "most_popular_queries": "Popular searches",
+                  "most_popular_products": "Popular products",
+                  "filter_by_category": "Filter by category",
+                  "filter_by_category_reset": "All",
+                  "filter_by_price": "Filter by price",
+                  "filter_by_price_from": "from",
+                  "filter_by_price_to": "to",
+                  "no_results": "Nothing found for the given conditions",
+                  "products_found": "Matching products"                  
+                }
+              },
+              l = d.createElement("link");
+              s = d.createElement("script");
+              s.type = "text/javascript";
+              s.async = true;
+              s.src = "https://quicksearchapi.com/searchapi.js";
+              b.appendChild(s);
+              l.setAttribute("rel", "stylesheet");
+              l.setAttribute("href", "https://quicksearchapi.com/searchapi.min.css");
+              b.appendChild(l);
+          </script>
         </div>
         ';
     }
@@ -188,6 +88,7 @@ function searchapi_fetch_products_and_index()
             "image" => wp_get_attachment_url($product->get_image_id()),
             "tags" => implode(",", wp_get_post_terms($product->get_id(), 'product_tag', array('fields' => 'names'))),
             "price" => $product->get_price(),
+	    "category" => trim(explode(',', $product->get_categories( ',', ' ' . _n( ' ', '  ', $cat_count, 'woocommerce' ) . ' ', ' ' ))[0])
         ];
 
         $response = api_add_page($product);
